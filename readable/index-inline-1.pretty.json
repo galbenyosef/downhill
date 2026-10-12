@@ -1,0 +1,6 @@
+{
+  "imports": {
+    "three": "/vendor/three.module.min.js",
+    "three/addons/utils/BufferGeometryUtils.js": "/vendor/BufferGeometryUtils.js"
+  }
+}

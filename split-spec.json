@@ -1,0 +1,591 @@
+{
+  "project": "downhill",
+  "kind": "statement-aligned-slices",
+  "defaultFile": "src/src__main-01.js",
+  "note": "DOWNHILL — Urban FPV (https://downhill-eta.vercel.app/) is capture-class: a hand-written ES module graph served at the origin root by a Vercel static deploy (no bundler in the app layer; only the two three.js r183 builds are minified vendor code). §0.4 fork-over-mirror was checked on 2026-10-13 — src/main.js credits the author Sree Menon and links https://github.com/msreekm/downhill as the \"GitHub repo\", but that repository answers 404 (removed or never public): no public source exists, so the mirror stands (recorded in README.md §0.4). Derived pipeline: capture → pinned prettier 3.9.6 (module API, default options, single pass verified idempotent — never the CLI: it respects .gitignore and can silently echo its input) → readable/<name>.pretty.js per captured JS file (capture-relative name, nested dirs flattened with __; every pretty provably NOT byte-identical to its capture source) → statement-aligned slices src/<name>-NN.js of every APP module (top-level declaration boundaries only, ~250-350 line windows; oversized single declarations stay whole) with an exact 2-line provenance header. Every slice parses standalone under `node --input-type=module --check -` and round-trips byte-exact to its recorded readable line range. Layout divergence (README): the origin serves the app under /src/ and the vendored libraries under /vendor/, so the byte-exact capture lives at src/*.js and vendor/** at the repo root — derived slices share src/ with the captured modules and are never listed in .upstream/manifest.json. Vendor rule — wholeFile sections, never sliced: the three.js r183 builds (three.module.min.js imports three.core.min.js) and the BufferGeometryUtils addon. Stylesheet rule: src/style.css is wholeFile. Inline scan: index.html carries an inline importmap — twin readable/index-inline-1.pretty.json + readable/index-inline-map.json with byte range + sha256. Non-standalone parts are indexed but never sliced (skipped sections): a pure trailing export {…} table where one exists — this capture's app layer has none. Identifiers in src/ are the app's own declared names — no rename campaign applies (PLAN §5) since the served code is not minified. Capture bytes are untouched by everything above; re-cut with `node tools/derive.mjs` after any capture refresh. `node tools/audit.js` is the gate.",
+  "renderOptions": {
+    "_default": "prettier 3.9.6, module API, default options, single pass (re-format verified idempotent at derive time) — never the CLI: it respects .gitignore and can silently echo its input",
+    "js": "parser babel, no plugins",
+    "css": "parser css, no plugins",
+    "json": "parser json, no plugins (inline importmap blocks)"
+  },
+  "source": "readable/: 19 JS pretties (16 app module(s) sliced, 3 vendor wholeFile) + 1 CSS pretties; src/: 24 statement-aligned slices across 16 app module(s); 0 skipped section(s); 5 wholeFile section(s); capture: 24 files under .upstream/manifest.json; inline scan: index.html (1 inline content block(s)); notRendered: 3 payload(s).",
+  "inline": {
+    "scanned": [
+      "index.html"
+    ],
+    "contentBlocks": 1,
+    "notRendered": 3,
+    "note": "index.html carries an inline importmap — prettified into readable/index-inline-1.pretty.json and recorded in readable/index-inline-map.json."
+  },
+  "sources": [
+    {
+      "sourceFile": "readable/src__main.pretty.js",
+      "capture": "src/main.js",
+      "captureKind": "file",
+      "captureSha256": "00918dbfa594a8af9b9d4c89c750ce246625d1a8e62bc48134adef2fa544535e",
+      "captureBytes": 36841,
+      "prettyLines": 704,
+      "prettyBytes": 41515,
+      "prettyPasses": 1,
+      "idempotent": true,
+      "tag": "src__main",
+      "slices": 3,
+      "derived": "readable + 3 statement-aligned slice(s)"
+    },
+    {
+      "sourceFile": "readable/src__amazon-world.pretty.js",
+      "capture": "src/amazon-world.js",
+      "captureKind": "file",
+      "captureSha256": "73b2f1d3d962385806e50f0dd661a1eca37235ed3ff4c694554f4c0d7f3184a4",
+      "captureBytes": 6458,
+      "prettyLines": 276,
+      "prettyBytes": 9148,
+      "prettyPasses": 1,
+      "idempotent": true,
+      "tag": "src__amazon-world",
+      "slices": 1,
+      "derived": "readable + 1 statement-aligned slice(s)"
+    },
+    {
+      "sourceFile": "readable/src__bengaluru-world.pretty.js",
+      "capture": "src/bengaluru-world.js",
+      "captureKind": "file",
+      "captureSha256": "65ae22c3bd58079eb62969fbf20fa24ee4d906d63c6a307e747229baea040be8",
+      "captureBytes": 5833,
+      "prettyLines": 302,
+      "prettyBytes": 8752,
+      "prettyPasses": 1,
+      "idempotent": true,
+      "tag": "src__bengaluru-world",
+      "slices": 1,
+      "derived": "readable + 1 statement-aligned slice(s)"
+    },
+    {
+      "sourceFile": "readable/src__billboard-layout.pretty.js",
+      "capture": "src/billboard-layout.js",
+      "captureKind": "file",
+      "captureSha256": "786d6a1c66ca64826db1ee32bc1ae95cfbc556b6b637a4e4a47c341507aa35e1",
+      "captureBytes": 814,
+      "prettyLines": 35,
+      "prettyBytes": 1027,
+      "prettyPasses": 1,
+      "idempotent": true,
+      "tag": "src__billboard-layout",
+      "slices": 1,
+      "derived": "readable + 1 statement-aligned slice(s)"
+    },
+    {
+      "sourceFile": "readable/src__billboards.pretty.js",
+      "capture": "src/billboards.js",
+      "captureKind": "file",
+      "captureSha256": "bbe0546660a134a9bfe8fb88e56e104b63a3f79e3ea56eb7d2d54c3c88558d95",
+      "captureBytes": 3299,
+      "prettyLines": 155,
+      "prettyBytes": 4254,
+      "prettyPasses": 1,
+      "idempotent": true,
+      "tag": "src__billboards",
+      "slices": 1,
+      "derived": "readable + 1 statement-aligned slice(s)"
+    },
+    {
+      "sourceFile": "readable/src__cameras.pretty.js",
+      "capture": "src/cameras.js",
+      "captureKind": "file",
+      "captureSha256": "d98578b23c6c392ec58dd1dbee8836a26ec8629c4462c4f32bbe39fde7de9560",
+      "captureBytes": 1006,
+      "prettyLines": 43,
+      "prettyBytes": 1294,
+      "prettyPasses": 1,
+      "idempotent": true,
+      "tag": "src__cameras",
+      "slices": 1,
+      "derived": "readable + 1 statement-aligned slice(s)"
+    },
+    {
+      "sourceFile": "readable/src__fork-world.pretty.js",
+      "capture": "src/fork-world.js",
+      "captureKind": "file",
+      "captureSha256": "c94f7d40361eb39cdc69396457f58a04134c91cb4637d62fa54f6b3bcc316f41",
+      "captureBytes": 2528,
+      "prettyLines": 124,
+      "prettyBytes": 3662,
+      "prettyPasses": 1,
+      "idempotent": true,
+      "tag": "src__fork-world",
+      "slices": 1,
+      "derived": "readable + 1 statement-aligned slice(s)"
+    },
+    {
+      "sourceFile": "readable/src__game.pretty.js",
+      "capture": "src/game.js",
+      "captureKind": "file",
+      "captureSha256": "d11bdcaefc0ef70e023ab13cb4423e1c0d66267fe5e73cda8c553a4f2093b8d0",
+      "captureBytes": 29281,
+      "prettyLines": 1333,
+      "prettyBytes": 37192,
+      "prettyPasses": 1,
+      "idempotent": true,
+      "tag": "src__game",
+      "slices": 5,
+      "derived": "readable + 5 statement-aligned slice(s)"
+    },
+    {
+      "sourceFile": "readable/src__halloween-world.pretty.js",
+      "capture": "src/halloween-world.js",
+      "captureKind": "file",
+      "captureSha256": "0b171f1504a03fa2f097127e05d23875b1aaddebf75cd35825651cc103637462",
+      "captureBytes": 7200,
+      "prettyLines": 382,
+      "prettyBytes": 10807,
+      "prettyPasses": 1,
+      "idempotent": true,
+      "tag": "src__halloween-world",
+      "slices": 2,
+      "derived": "readable + 2 statement-aligned slice(s)"
+    },
+    {
+      "sourceFile": "readable/src__impacts.pretty.js",
+      "capture": "src/impacts.js",
+      "captureKind": "file",
+      "captureSha256": "e0edc34c299766f19f601a0b020ee5fa5abc695b9ec2c43b56f8074dc1b8d383",
+      "captureBytes": 1261,
+      "prettyLines": 57,
+      "prettyBytes": 1788,
+      "prettyPasses": 1,
+      "idempotent": true,
+      "tag": "src__impacts",
+      "slices": 1,
+      "derived": "readable + 1 statement-aligned slice(s)"
+    },
+    {
+      "sourceFile": "readable/src__race-map.pretty.js",
+      "capture": "src/race-map.js",
+      "captureKind": "file",
+      "captureSha256": "8e4e2da9041246735acb401b126e98fea4085e31e0fca108d31dc552d6c2be86",
+      "captureBytes": 5731,
+      "prettyLines": 136,
+      "prettyBytes": 6189,
+      "prettyPasses": 1,
+      "idempotent": true,
+      "tag": "src__race-map",
+      "slices": 1,
+      "derived": "readable + 1 statement-aligned slice(s)"
+    },
+    {
+      "sourceFile": "readable/src__racers.pretty.js",
+      "capture": "src/racers.js",
+      "captureKind": "file",
+      "captureSha256": "7ebbd1455675457a44c5acfd7fa94d0e46f5b65cb72a9ec63306452c03215731",
+      "captureBytes": 6249,
+      "prettyLines": 263,
+      "prettyBytes": 8161,
+      "prettyPasses": 1,
+      "idempotent": true,
+      "tag": "src__racers",
+      "slices": 1,
+      "derived": "readable + 1 statement-aligned slice(s)"
+    },
+    {
+      "sourceFile": "readable/src__roku-lineup.pretty.js",
+      "capture": "src/roku-lineup.js",
+      "captureKind": "file",
+      "captureSha256": "77f853e7efb193ca733b18c9d63c32bbd68faa6959d953bfbcd9febdf7d965b2",
+      "captureBytes": 1538,
+      "prettyLines": 41,
+      "prettyBytes": 1730,
+      "prettyPasses": 1,
+      "idempotent": true,
+      "tag": "src__roku-lineup",
+      "slices": 1,
+      "derived": "readable + 1 statement-aligned slice(s)"
+    },
+    {
+      "sourceFile": "readable/src__route-links.pretty.js",
+      "capture": "src/route-links.js",
+      "captureKind": "file",
+      "captureSha256": "c44cd50619ad5ec6d77af51c8fb22e43663e0a5c596e81b09133e35b0ddd75b8",
+      "captureBytes": 2205,
+      "prettyLines": 90,
+      "prettyBytes": 2585,
+      "prettyPasses": 1,
+      "idempotent": true,
+      "tag": "src__route-links",
+      "slices": 1,
+      "derived": "readable + 1 statement-aligned slice(s)"
+    },
+    {
+      "sourceFile": "readable/src__sky-world.pretty.js",
+      "capture": "src/sky-world.js",
+      "captureKind": "file",
+      "captureSha256": "d2dc3396fca67f07412164e67b293a0fe2d8ed9ac248c28a709e7df19f88110b",
+      "captureBytes": 5587,
+      "prettyLines": 234,
+      "prettyBytes": 7198,
+      "prettyPasses": 1,
+      "idempotent": true,
+      "tag": "src__sky-world",
+      "slices": 1,
+      "derived": "readable + 1 statement-aligned slice(s)"
+    },
+    {
+      "sourceFile": "readable/src__world.pretty.js",
+      "capture": "src/world.js",
+      "captureKind": "file",
+      "captureSha256": "6204c9af22e287d2f2bdd381a0d14baca704cd928ef7b70a6ec879692d01d887",
+      "captureBytes": 44356,
+      "prettyLines": 2051,
+      "prettyBytes": 64668,
+      "prettyPasses": 1,
+      "idempotent": true,
+      "tag": "src__world",
+      "slices": 2,
+      "derived": "readable + 2 statement-aligned slice(s)"
+    },
+    {
+      "sourceFile": "readable/vendor__BufferGeometryUtils.pretty.js",
+      "capture": "vendor/BufferGeometryUtils.js",
+      "captureKind": "file",
+      "captureSha256": "fda7e946b8e0b5ab39b779206589e7a1079a22eb24efb89d7223e03fdfb1f751",
+      "captureBytes": 35539,
+      "prettyLines": 1287,
+      "prettyBytes": 37345,
+      "prettyPasses": 1,
+      "idempotent": true,
+      "tag": "vendor__BufferGeometryUtils",
+      "slices": 0,
+      "derived": "readable only (vendor bundle, wholeFile)",
+      "what": "three.js addon — utils/BufferGeometryUtils (vendor)"
+    },
+    {
+      "sourceFile": "readable/vendor__three.core.min.pretty.js",
+      "capture": "vendor/three.core.min.js",
+      "captureKind": "file",
+      "captureSha256": "0a9c2f0672c7b8d993ba7639e71919db181ca50c9dff99c78476d3e19057ca9c",
+      "captureBytes": 382617,
+      "prettyLines": 21081,
+      "prettyBytes": 577964,
+      "prettyPasses": 1,
+      "idempotent": true,
+      "tag": "vendor__three.core.min",
+      "slices": 0,
+      "derived": "readable only (vendor bundle, wholeFile)",
+      "what": "three.js r183 build — core (vendor)"
+    },
+    {
+      "sourceFile": "readable/vendor__three.module.min.pretty.js",
+      "capture": "vendor/three.module.min.js",
+      "captureKind": "file",
+      "captureSha256": "0a61c95f14e0fa015b3083475c73424f360e5f6f5b74c282b50fdbc2f4c228fc",
+      "captureBytes": 359158,
+      "prettyLines": 10322,
+      "prettyBytes": 484757,
+      "prettyPasses": 1,
+      "idempotent": true,
+      "tag": "vendor__three.module.min",
+      "slices": 0,
+      "derived": "readable only (vendor bundle, wholeFile)",
+      "what": "three.js r183 build — WebGL renderer module (vendor)"
+    },
+    {
+      "sourceFile": "readable/src__style.pretty.css",
+      "capture": "src/style.css",
+      "captureKind": "file",
+      "captureSha256": "c00503657c570031698c5a808f90876006f10d85eb82c0bc5bcd5c11b8f49737",
+      "captureBytes": 30283,
+      "prettyLines": 2260,
+      "prettyBytes": 39112,
+      "prettyPasses": 1,
+      "idempotent": true,
+      "tag": "src__style",
+      "slices": 0,
+      "derived": "readable only (stylesheet, wholeFile)"
+    },
+    {
+      "sourceFile": "readable/index-inline-1.pretty.json",
+      "capture": "index.html",
+      "captureKind": "inline-importmap",
+      "captureByteStart": 566,
+      "captureByteEnd": 694,
+      "captureSha256": "2cbf137aeca62b6937a475d0572ab54d51ab305da8b493511ae1eab6417fed43",
+      "captureBytes": 128,
+      "prettyLines": 6,
+      "prettyBytes": 149,
+      "prettySha256": "f0d61c4ae753d35ea08f773253c3add95b81a7783b9bfb9727ce5f606119e925",
+      "tag": "index-inline-1",
+      "slices": 0,
+      "derived": "readable only (inline block, wholeFile)"
+    }
+  ],
+  "sections": [
+    {
+      "file": "src__main-01.js",
+      "title": "src__main 01 — button",
+      "desc": "Lines 1-320. Markers: button(25), wrapper(24).",
+      "startLine": 1,
+      "endLine": 320,
+      "sourceFile": "readable/src__main.pretty.js"
+    },
+    {
+      "file": "src__main-02.js",
+      "title": "src__main 02 — context",
+      "desc": "Lines 321-460. Markers: context(23), event(17).",
+      "startLine": 321,
+      "endLine": 460,
+      "sourceFile": "readable/src__main.pretty.js"
+    },
+    {
+      "file": "src__main-03.js",
+      "title": "src__main 03 — run",
+      "desc": "Lines 461-704. Markers: run(56), queryselector(24).",
+      "startLine": 461,
+      "endLine": 704,
+      "sourceFile": "readable/src__main.pretty.js"
+    },
+    {
+      "file": "src__amazon-world-01.js",
+      "title": "src__amazon-world 01 — three",
+      "desc": "Lines 1-276. Markers: three(22), math(21).",
+      "startLine": 1,
+      "endLine": 276,
+      "sourceFile": "readable/src__amazon-world.pretty.js"
+    },
+    {
+      "file": "src__bengaluru-world-01.js",
+      "title": "src__bengaluru-world 01 — box",
+      "desc": "Lines 1-302. Markers: box(22), side(21).",
+      "startLine": 1,
+      "endLine": 302,
+      "sourceFile": "readable/src__bengaluru-world.pretty.js"
+    },
+    {
+      "file": "src__billboard-layout-01.js",
+      "title": "src__billboard-layout 01 — course",
+      "desc": "Lines 1-35. Markers: course(9), offset(5).",
+      "startLine": 1,
+      "endLine": 35,
+      "sourceFile": "readable/src__billboard-layout.pretty.js"
+    },
+    {
+      "file": "src__billboards-01.js",
+      "title": "src__billboards 01 — ctx",
+      "desc": "Lines 1-155. Markers: ctx(35), image(14).",
+      "startLine": 1,
+      "endLine": 155,
+      "sourceFile": "readable/src__billboards.pretty.js"
+    },
+    {
+      "file": "src__cameras-01.js",
+      "title": "src__cameras 01 — run",
+      "desc": "Lines 1-43. Markers: run(9), route(8).",
+      "startLine": 1,
+      "endLine": 43,
+      "sourceFile": "readable/src__cameras.pretty.js"
+    },
+    {
+      "file": "src__fork-world-01.js",
+      "title": "src__fork-world 01 — start",
+      "desc": "Lines 1-124. Markers: start(10), side(8).",
+      "startLine": 1,
+      "endLine": 124,
+      "sourceFile": "readable/src__fork-world.pretty.js"
+    },
+    {
+      "file": "src__game-01.js",
+      "title": "src__game 01 — colors",
+      "desc": "Lines 1-348. Markers: colors(12), country(12).",
+      "startLine": 1,
+      "endLine": 348,
+      "sourceFile": "readable/src__game.pretty.js"
+    },
+    {
+      "file": "src__game-02.js",
+      "title": "src__game 02 — course",
+      "desc": "Lines 349-693. Markers: course(45), run(32).",
+      "startLine": 349,
+      "endLine": 693,
+      "sourceFile": "readable/src__game.pretty.js"
+    },
+    {
+      "file": "src__game-03.js",
+      "title": "src__game 03 — rider",
+      "desc": "Lines 694-947. Markers: rider(62), course(48).",
+      "startLine": 694,
+      "endLine": 947,
+      "sourceFile": "readable/src__game.pretty.js"
+    },
+    {
+      "file": "src__game-04.js",
+      "title": "src__game 04 — run",
+      "desc": "Lines 948-1285. Markers: run(240), math(42).",
+      "startLine": 948,
+      "endLine": 1285,
+      "sourceFile": "readable/src__game.pretty.js"
+    },
+    {
+      "file": "src__game-05.js",
+      "title": "src__game 05 — run",
+      "desc": "Lines 1286-1333. Markers: run(19), edge(5).",
+      "startLine": 1286,
+      "endLine": 1333,
+      "sourceFile": "readable/src__game.pretty.js"
+    },
+    {
+      "file": "src__halloween-world-01.js",
+      "title": "src__halloween-world 01 — and",
+      "desc": "Lines 1-12. Markers: and(1), animated(1).",
+      "startLine": 1,
+      "endLine": 12,
+      "sourceFile": "readable/src__halloween-world.pretty.js"
+    },
+    {
+      "file": "src__halloween-world-02.js",
+      "title": "src__halloween-world 02 — side",
+      "desc": "Oversized single declaration (kept whole). Lines 13-382. Markers: side(30), three(30).",
+      "startLine": 13,
+      "endLine": 382,
+      "sourceFile": "readable/src__halloween-world.pretty.js"
+    },
+    {
+      "file": "src__impacts-01.js",
+      "title": "src__impacts 01 — math",
+      "desc": "Lines 1-57. Markers: math(18), body(16).",
+      "startLine": 1,
+      "endLine": 57,
+      "sourceFile": "readable/src__impacts.pretty.js"
+    },
+    {
+      "file": "src__race-map-01.js",
+      "title": "src__race-map 01 — rider",
+      "desc": "Lines 1-136. Markers: rider(23), math(17).",
+      "startLine": 1,
+      "endLine": 136,
+      "sourceFile": "readable/src__race-map.pretty.js"
+    },
+    {
+      "file": "src__racers-01.js",
+      "title": "src__racers 01 — group",
+      "desc": "Lines 1-263. Markers: group(45), three(21).",
+      "startLine": 1,
+      "endLine": 263,
+      "sourceFile": "readable/src__racers.pretty.js"
+    },
+    {
+      "file": "src__roku-lineup-01.js",
+      "title": "src__roku-lineup 01 — export",
+      "desc": "Lines 1-41. Markers: export(4), age(3).",
+      "startLine": 1,
+      "endLine": 41,
+      "sourceFile": "readable/src__roku-lineup.pretty.js"
+    },
+    {
+      "file": "src__route-links-01.js",
+      "title": "src__route-links 01 — key",
+      "desc": "Lines 1-90. Markers: key(11), normalize(8).",
+      "startLine": 1,
+      "endLine": 90,
+      "sourceFile": "readable/src__route-links.pretty.js"
+    },
+    {
+      "file": "src__sky-world-01.js",
+      "title": "src__sky-world 01 — three",
+      "desc": "Lines 1-234. Markers: three(27), ctx(19).",
+      "startLine": 1,
+      "endLine": 234,
+      "sourceFile": "readable/src__sky-world.pretty.js"
+    },
+    {
+      "file": "src__world-01.js",
+      "title": "src__world 01 — seed",
+      "desc": "Lines 1-37. Markers: seed(7), three(3).",
+      "startLine": 1,
+      "endLine": 37,
+      "sourceFile": "readable/src__world.pretty.js"
+    },
+    {
+      "file": "src__world-02.js",
+      "title": "src__world 02 — side",
+      "desc": "Oversized single declaration (kept whole). Lines 38-2051. Markers: side(158), three(116).",
+      "startLine": 38,
+      "endLine": 2051,
+      "sourceFile": "readable/src__world.pretty.js"
+    },
+    {
+      "file": "vendor__BufferGeometryUtils-vendor.js",
+      "wholeFile": true,
+      "title": "vendor__BufferGeometryUtils — three.js addon — utils/BufferGeometryUtils (vendor) (whole-file, never sliced)",
+      "desc": "Lines 1-1287 of readable/vendor__BufferGeometryUtils.pretty.js: Third-party library captured byte-exact from the origin (three.js addon — utils/BufferGeometryUtils (vendor)) — vendor rule: indexed whole-file in readable/, never sliced or rewritten.",
+      "note": "whole-file (vendor rule): indexed in readable/, never sliced",
+      "startLine": 1,
+      "endLine": 1287,
+      "sourceFile": "readable/vendor__BufferGeometryUtils.pretty.js"
+    },
+    {
+      "file": "vendor__three.core.min-vendor.js",
+      "wholeFile": true,
+      "title": "vendor__three.core.min — three.js r183 build — core (vendor) (whole-file, never sliced)",
+      "desc": "Lines 1-21081 of readable/vendor__three.core.min.pretty.js: Third-party library captured byte-exact from the origin (three.js r183 build — core (vendor)) — vendor rule: indexed whole-file in readable/, never sliced or rewritten.",
+      "note": "whole-file (vendor rule): indexed in readable/, never sliced",
+      "startLine": 1,
+      "endLine": 21081,
+      "sourceFile": "readable/vendor__three.core.min.pretty.js"
+    },
+    {
+      "file": "vendor__three.module.min-vendor.js",
+      "wholeFile": true,
+      "title": "vendor__three.module.min — three.js r183 build — WebGL renderer module (vendor) (whole-file, never sliced)",
+      "desc": "Lines 1-10322 of readable/vendor__three.module.min.pretty.js: Third-party library captured byte-exact from the origin (three.js r183 build — WebGL renderer module (vendor)) — vendor rule: indexed whole-file in readable/, never sliced or rewritten.",
+      "note": "whole-file (vendor rule): indexed in readable/, never sliced",
+      "startLine": 1,
+      "endLine": 10322,
+      "sourceFile": "readable/vendor__three.module.min.pretty.js"
+    },
+    {
+      "file": "src__style.css",
+      "wholeFile": true,
+      "title": "src__style — stylesheet (whole-file, never sliced)",
+      "desc": "Lines 1-2260 of readable/src__style.pretty.css. Whole-file (stylesheet rule): the capture stylesheet is indexed whole in readable/, never sliced.",
+      "note": "whole-file (stylesheet, not sliced): CSS is indexed whole in readable/",
+      "startLine": 1,
+      "endLine": 2260,
+      "sourceFile": "readable/src__style.pretty.css"
+    },
+    {
+      "file": "index-inline-1.json",
+      "wholeFile": true,
+      "title": "index-inline-1 — inline importmap block (whole-file, never sliced)",
+      "desc": "Lines 1-6 of readable/index-inline-1.pretty.json. Whole-file: the entry document's inline importmap block (128 B at bytes 566-694 of index.html) is indexed whole and never sliced.",
+      "note": "whole-file (entry inline importmap block, not sliced)",
+      "startLine": 1,
+      "endLine": 6,
+      "sourceFile": "readable/index-inline-1.pretty.json"
+    }
+  ],
+  "notRendered": [
+    {
+      "capture": "src/assets/roku/hotel-transylvania-2.jpg",
+      "kind": "payload",
+      "bytes": 22853,
+      "sha256": "1e1b446f37c626fceabf7124095e2ce1b7f8774caff0ccaecbbd713e96310e8c",
+      "rendered": false,
+      "reason": "non-code payload — recorded with bytes + sha256, no pretty/slice pass"
+    },
+    {
+      "capture": "src/assets/roku/hotel-transylvania.jpg",
+      "kind": "payload",
+      "bytes": 31751,
+      "sha256": "f171873ea45015e6f37643e92ce865243cfbc9162a9e3e92a6e2ddd6b4f85e8e",
+      "rendered": false,
+      "reason": "non-code payload — recorded with bytes + sha256, no pretty/slice pass"
+    },
+    {
+      "capture": "src/assets/roku/madagascar.jpg",
+      "kind": "payload",
+      "bytes": 31273,
+      "sha256": "9d396f01b6b60bdc6727c076292ae49e50b558db815a74fb52bee03c2a1f8fa4",
+      "rendered": false,
+      "reason": "non-code payload — recorded with bytes + sha256, no pretty/slice pass"
+    }
+  ]
+}

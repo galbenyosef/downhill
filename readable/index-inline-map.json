@@ -1,0 +1,18 @@
+{
+  "capture": "index.html",
+  "generated": "2026-10-13",
+  "note": "byte ranges + sha256 of every inline <script>/<style> content block in the captured entry document; twins are the prettified (prettier 3.9.6, module API) renderings and are never shipped to a browser.",
+  "blocks": [
+    {
+      "file": "readable/index-inline-1.pretty.json",
+      "source": "index.html",
+      "section": "index-inline-1.json",
+      "kind": "importmap",
+      "block": 1,
+      "byteStart": 566,
+      "byteEnd": 694,
+      "bytes": 128,
+      "sha256": "2cbf137aeca62b6937a475d0572ab54d51ab305da8b493511ae1eab6417fed43"
+    }
+  ]
+}
