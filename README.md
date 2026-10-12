@@ -249,5 +249,5 @@ Both queued derived layers are in place, cut from the recorded capture
 <!-- cols: cls=classification · ver=verify 0 problems · upd=drift probe · man=manifest · rdbl=readable re-derived · src=reversed src · boot=boot test · top=offline-mirror topic · tag=legacy bundle date · staged=staged not committed -->
 | # | repo | cls | ver | upd | man | rdbl | src | boot | top | tag | staged |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| 0 | downhill | mirror | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | — | — |
+| 300 | downhill | mirror | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | — | — |
 <!-- mirror-status:end -->
