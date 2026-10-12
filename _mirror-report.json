@@ -1,0 +1,76 @@
+{
+  "start": "https://downhill-eta.vercel.app/",
+  "origin": "https://downhill-eta.vercel.app",
+  "gated": false,
+  "sessionRenewal": "none",
+  "requests": 24,
+  "fetched": 24,
+  "bytes": 1054867,
+  "paths": [
+    "index.html",
+    "src/amazon-world.js",
+    "src/assets/roku/hotel-transylvania-2.jpg",
+    "src/assets/roku/hotel-transylvania.jpg",
+    "src/assets/roku/madagascar.jpg",
+    "src/bengaluru-world.js",
+    "src/billboard-layout.js",
+    "src/billboards.js",
+    "src/cameras.js",
+    "src/fork-world.js",
+    "src/game.js",
+    "src/halloween-world.js",
+    "src/impacts.js",
+    "src/main.js",
+    "src/race-map.js",
+    "src/racers.js",
+    "src/roku-lineup.js",
+    "src/route-links.js",
+    "src/sky-world.js",
+    "src/style.css",
+    "src/world.js",
+    "vendor/BufferGeometryUtils.js",
+    "vendor/three.core.min.js",
+    "vendor/three.module.min.js"
+  ],
+  "unresolved": [
+    {
+      "spec": "examples/jsm/libs/mikktspace.module.js",
+      "from": "vendor/BufferGeometryUtils.js",
+      "kind": "scanner false positive",
+      "note": "JSDoc @param mention on line 32 (\"Instance of `examples/jsm/libs/mikktspace.module.js`\"), not an import — the addon never loads it."
+    },
+    {
+      "spec": "three/addons/utils/BufferGeometryUtils.js",
+      "from": "vendor/BufferGeometryUtils.js",
+      "kind": "scanner false positive",
+      "note": "the @three_import JSDoc line (self-reference for docs), not an import."
+    }
+  ],
+  "unreachable": [],
+  "external": [
+    {
+      "pattern": "fonts.googleapis.com/css2 (Barlow / Barlow Condensed)",
+      "kind": "webfont-css-cdn",
+      "note": "declared by an @import at the top of src/style.css; stays external per fleet rule (CDN deps are never backfilled into the capture). The game renders fully without it (system fallback stack)."
+    },
+    {
+      "pattern": "images.sr.roku.com (movie poster originals)",
+      "kind": "data-string-only",
+      "note": "the imageSource field of the three src/assets/roku/*.jpg records in src/roku-lineup.js quotes the Roku CDN original; never fetched at runtime — the local JPGs are what the game loads. Roku Channel detail-page URLs (therokuchannel.roku.com/details/…) are likewise data strings."
+    },
+    {
+      "pattern": "github.com/msreekm, github.com/msreekm/downhill",
+      "kind": "credit-links",
+      "note": "author credit + \"GitHub repo ↗\" links in the menu footer (src/main.js line 54); the repo URL answers HTTP 404 (removed or never public) — §0.4 finding, no fork available."
+    }
+  ],
+  "notes": [
+    "Capture method: BFS closure (tools/capture.mjs) from the entry document over static/bare/dynamic imports (import map resolving bare specifiers), new URL(..., import.meta.url), fetch() literals, CSS url()/@import and asset-path string literals; iterated to fixpoint — a full re-scan round over every captured file (tools/capture.mjs --scan) reports 0 referenced-but-missing same-origin files.",
+    "Cross-check: live browser (opencli) played the game against the live origin — performance resource log shows exactly the 24 captured same-origin files plus one off-origin Google Fonts CSS; zero new requests during actual gameplay (pedaling through the course), zero 404s.",
+    "Handler-written source, not a build artifact: 16 app modules under /src/ + src/style.css + index.html carry real names, comments and export points; only the vendor three.js r183 builds (three.module.min.js -> three.core.min.js) and the BufferGeometryUtils addon are third-party. The three src/assets/roku/*.jpg posters are the only binary payloads.",
+    "Derivation recorded in split-spec.json: readable/ 20 file pretties + 1 inline importmap twin (prettier 3.9.6 module API, every pretty provably not a byte copy, 21/21 re-render byte-exact); src/ 24 statement-aligned slices across the 16 app modules (24/24 parse standalone, 24/24 byte-exact round-trip); 5 wholeFile sections (3 vendor, 1 stylesheet, 1 inline importmap); 3 notRendered payloads (the roku JPGs, hashed).",
+    "Boot test: mirror served on loopback (all 24 files HTTP 200, bytes identical to capture), game booted and played (actual FPV run), cover + boot evidence captured from gameplay via opencli; listener killed, port proven closed (netstat + connection refused).",
+    "Drift probe tools/update.mjs: up to date — 24 captured files identical upstream; _mirror-report.json / .upstream/capture-log.json excluded by name (local-only records).",
+    "§0.4 fork-over-mirror: the served src/main.js links https://github.com/msreekm/downhill as the project repo (author credit Sree Menon), but the repo answers 404 via the GitHub API (msreekm user exists, repo does not) — no public source, no fork path; mirror stands. Coordinator decides any fork/retire question separately."
+  ]
+}
