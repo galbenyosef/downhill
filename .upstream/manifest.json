@@ -1,0 +1,102 @@
+{
+  "generated": "2026-10-12T23:40:24.994Z",
+  "origin": "https://downhill-eta.vercel.app",
+  "files": {
+    "index.html": {
+      "bytes": 1206,
+      "sha256": "6a339c3167370ee071c143d4afca9a96329d1f770d4c29254597eb4026c6c97f"
+    },
+    "src/amazon-world.js": {
+      "bytes": 6458,
+      "sha256": "73b2f1d3d962385806e50f0dd661a1eca37235ed3ff4c694554f4c0d7f3184a4"
+    },
+    "src/assets/roku/hotel-transylvania-2.jpg": {
+      "bytes": 22853,
+      "sha256": "1e1b446f37c626fceabf7124095e2ce1b7f8774caff0ccaecbbd713e96310e8c"
+    },
+    "src/assets/roku/hotel-transylvania.jpg": {
+      "bytes": 31751,
+      "sha256": "f171873ea45015e6f37643e92ce865243cfbc9162a9e3e92a6e2ddd6b4f85e8e"
+    },
+    "src/assets/roku/madagascar.jpg": {
+      "bytes": 31273,
+      "sha256": "9d396f01b6b60bdc6727c076292ae49e50b558db815a74fb52bee03c2a1f8fa4"
+    },
+    "src/bengaluru-world.js": {
+      "bytes": 5833,
+      "sha256": "65ae22c3bd58079eb62969fbf20fa24ee4d906d63c6a307e747229baea040be8"
+    },
+    "src/billboard-layout.js": {
+      "bytes": 814,
+      "sha256": "786d6a1c66ca64826db1ee32bc1ae95cfbc556b6b637a4e4a47c341507aa35e1"
+    },
+    "src/billboards.js": {
+      "bytes": 3299,
+      "sha256": "bbe0546660a134a9bfe8fb88e56e104b63a3f79e3ea56eb7d2d54c3c88558d95"
+    },
+    "src/cameras.js": {
+      "bytes": 1006,
+      "sha256": "d98578b23c6c392ec58dd1dbee8836a26ec8629c4462c4f32bbe39fde7de9560"
+    },
+    "src/fork-world.js": {
+      "bytes": 2528,
+      "sha256": "c94f7d40361eb39cdc69396457f58a04134c91cb4637d62fa54f6b3bcc316f41"
+    },
+    "src/game.js": {
+      "bytes": 29281,
+      "sha256": "d11bdcaefc0ef70e023ab13cb4423e1c0d66267fe5e73cda8c553a4f2093b8d0"
+    },
+    "src/halloween-world.js": {
+      "bytes": 7200,
+      "sha256": "0b171f1504a03fa2f097127e05d23875b1aaddebf75cd35825651cc103637462"
+    },
+    "src/impacts.js": {
+      "bytes": 1261,
+      "sha256": "e0edc34c299766f19f601a0b020ee5fa5abc695b9ec2c43b56f8074dc1b8d383"
+    },
+    "src/main.js": {
+      "bytes": 36841,
+      "sha256": "00918dbfa594a8af9b9d4c89c750ce246625d1a8e62bc48134adef2fa544535e"
+    },
+    "src/race-map.js": {
+      "bytes": 5731,
+      "sha256": "8e4e2da9041246735acb401b126e98fea4085e31e0fca108d31dc552d6c2be86"
+    },
+    "src/racers.js": {
+      "bytes": 6249,
+      "sha256": "7ebbd1455675457a44c5acfd7fa94d0e46f5b65cb72a9ec63306452c03215731"
+    },
+    "src/roku-lineup.js": {
+      "bytes": 1538,
+      "sha256": "77f853e7efb193ca733b18c9d63c32bbd68faa6959d953bfbcd9febdf7d965b2"
+    },
+    "src/route-links.js": {
+      "bytes": 2205,
+      "sha256": "c44cd50619ad5ec6d77af51c8fb22e43663e0a5c596e81b09133e35b0ddd75b8"
+    },
+    "src/sky-world.js": {
+      "bytes": 5587,
+      "sha256": "d2dc3396fca67f07412164e67b293a0fe2d8ed9ac248c28a709e7df19f88110b"
+    },
+    "src/style.css": {
+      "bytes": 30283,
+      "sha256": "c00503657c570031698c5a808f90876006f10d85eb82c0bc5bcd5c11b8f49737"
+    },
+    "src/world.js": {
+      "bytes": 44356,
+      "sha256": "6204c9af22e287d2f2bdd381a0d14baca704cd928ef7b70a6ec879692d01d887"
+    },
+    "vendor/BufferGeometryUtils.js": {
+      "bytes": 35539,
+      "sha256": "fda7e946b8e0b5ab39b779206589e7a1079a22eb24efb89d7223e03fdfb1f751"
+    },
+    "vendor/three.core.min.js": {
+      "bytes": 382617,
+      "sha256": "0a9c2f0672c7b8d993ba7639e71919db181ca50c9dff99c78476d3e19057ca9c"
+    },
+    "vendor/three.module.min.js": {
+      "bytes": 359158,
+      "sha256": "0a61c95f14e0fa015b3083475c73424f360e5f6f5b74c282b50fdbc2f4c228fc"
+    }
+  }
+}

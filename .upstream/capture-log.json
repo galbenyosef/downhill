@@ -1,0 +1,293 @@
+{
+  "fetched": {
+    "index.html": {
+      "status": 200,
+      "bytes": 1206,
+      "sha256": "6a339c3167370ee071c143d4afca9a96329d1f770d4c29254597eb4026c6c97f",
+      "contentType": "text/html; charset=utf-8",
+      "etag": "W/\"a2758c2cc5853dabd965b514beac72c6\"",
+      "lastModified": "Mon, 12 Oct 2026 23:37:49 GMT"
+    },
+    "src/style.css": {
+      "status": 200,
+      "bytes": 30283,
+      "sha256": "c00503657c570031698c5a808f90876006f10d85eb82c0bc5bcd5c11b8f49737",
+      "contentType": "text/css; charset=utf-8",
+      "etag": "W/\"9d3e1792c6505a7ed2d03f235a7fa158\"",
+      "lastModified": "Mon, 12 Oct 2026 23:37:49 GMT"
+    },
+    "src/main.js": {
+      "status": 200,
+      "bytes": 36841,
+      "sha256": "00918dbfa594a8af9b9d4c89c750ce246625d1a8e62bc48134adef2fa544535e",
+      "contentType": "application/javascript; charset=utf-8",
+      "etag": "W/\"74e4489ea3294550a7663e6917ef65d5\"",
+      "lastModified": "Mon, 12 Oct 2026 23:36:49 GMT"
+    },
+    "src/route-links.js": {
+      "status": 200,
+      "bytes": 2205,
+      "sha256": "c44cd50619ad5ec6d77af51c8fb22e43663e0a5c596e81b09133e35b0ddd75b8",
+      "contentType": "application/javascript; charset=utf-8",
+      "etag": "W/\"d7689fd5c6379c326b26b12abb746c27\"",
+      "lastModified": "Mon, 12 Oct 2026 23:37:50 GMT"
+    },
+    "src/cameras.js": {
+      "status": 200,
+      "bytes": 1006,
+      "sha256": "d98578b23c6c392ec58dd1dbee8836a26ec8629c4462c4f32bbe39fde7de9560",
+      "contentType": "application/javascript; charset=utf-8",
+      "etag": "W/\"772d08cf62fd91e550c44dc4c791b32f\"",
+      "lastModified": "Mon, 12 Oct 2026 23:37:50 GMT"
+    },
+    "src/world.js": {
+      "status": 200,
+      "bytes": 44356,
+      "sha256": "6204c9af22e287d2f2bdd381a0d14baca704cd928ef7b70a6ec879692d01d887",
+      "contentType": "application/javascript; charset=utf-8",
+      "etag": "W/\"3a97bc79d2100632334ba27cf5e64987\"",
+      "lastModified": "Mon, 12 Oct 2026 23:37:51 GMT"
+    },
+    "src/race-map.js": {
+      "status": 200,
+      "bytes": 5731,
+      "sha256": "8e4e2da9041246735acb401b126e98fea4085e31e0fca108d31dc552d6c2be86",
+      "contentType": "application/javascript; charset=utf-8",
+      "etag": "W/\"899ff9ccb2128f496c3ffa85b0e182b3\"",
+      "lastModified": "Mon, 12 Oct 2026 23:37:51 GMT"
+    },
+    "src/game.js": {
+      "status": 200,
+      "bytes": 29281,
+      "sha256": "d11bdcaefc0ef70e023ab13cb4423e1c0d66267fe5e73cda8c553a4f2093b8d0",
+      "contentType": "application/javascript; charset=utf-8",
+      "etag": "W/\"85a19c6692094300f472b1e2b6300dbe\"",
+      "lastModified": "Mon, 12 Oct 2026 23:37:51 GMT"
+    },
+    "src/impacts.js": {
+      "status": 200,
+      "bytes": 1261,
+      "sha256": "e0edc34c299766f19f601a0b020ee5fa5abc695b9ec2c43b56f8074dc1b8d383",
+      "contentType": "application/javascript; charset=utf-8",
+      "etag": "W/\"3ae5a056b66d06cf611eff86511168e8\"",
+      "lastModified": "Mon, 12 Oct 2026 23:37:51 GMT"
+    },
+    "src/billboards.js": {
+      "status": 200,
+      "bytes": 3299,
+      "sha256": "bbe0546660a134a9bfe8fb88e56e104b63a3f79e3ea56eb7d2d54c3c88558d95",
+      "contentType": "application/javascript; charset=utf-8",
+      "etag": "W/\"76538a92181939d0d1cc914c5c799a01\"",
+      "lastModified": "Mon, 12 Oct 2026 23:37:52 GMT"
+    },
+    "vendor/three.module.min.js": {
+      "status": 200,
+      "bytes": 359158,
+      "sha256": "0a61c95f14e0fa015b3083475c73424f360e5f6f5b74c282b50fdbc2f4c228fc",
+      "contentType": "application/javascript; charset=utf-8",
+      "etag": "W/\"01f6b722b4d903b8b2d5042bb2371966\"",
+      "lastModified": "Mon, 12 Oct 2026 23:37:52 GMT"
+    },
+    "vendor/BufferGeometryUtils.js": {
+      "status": 200,
+      "bytes": 35539,
+      "sha256": "fda7e946b8e0b5ab39b779206589e7a1079a22eb24efb89d7223e03fdfb1f751",
+      "contentType": "application/javascript; charset=utf-8",
+      "etag": "W/\"8b5e5e7acf0abc6581f83594f5a6db03\"",
+      "lastModified": "Mon, 12 Oct 2026 23:37:52 GMT"
+    },
+    "src/fork-world.js": {
+      "status": 200,
+      "bytes": 2528,
+      "sha256": "c94f7d40361eb39cdc69396457f58a04134c91cb4637d62fa54f6b3bcc316f41",
+      "contentType": "application/javascript; charset=utf-8",
+      "etag": "W/\"3ea1c16c15bbb4faf51ccf461518ba4d\"",
+      "lastModified": "Mon, 12 Oct 2026 23:37:52 GMT"
+    },
+    "src/sky-world.js": {
+      "status": 200,
+      "bytes": 5587,
+      "sha256": "d2dc3396fca67f07412164e67b293a0fe2d8ed9ac248c28a709e7df19f88110b",
+      "contentType": "application/javascript; charset=utf-8",
+      "etag": "W/\"c8c8852441990398aadb497628a5ec1a\"",
+      "lastModified": "Mon, 12 Oct 2026 23:37:53 GMT"
+    },
+    "src/halloween-world.js": {
+      "status": 200,
+      "bytes": 7200,
+      "sha256": "0b171f1504a03fa2f097127e05d23875b1aaddebf75cd35825651cc103637462",
+      "contentType": "application/javascript; charset=utf-8",
+      "etag": "W/\"d3506201212480f98056bfb3381913c2\"",
+      "lastModified": "Mon, 12 Oct 2026 23:37:53 GMT"
+    },
+    "src/bengaluru-world.js": {
+      "status": 200,
+      "bytes": 5833,
+      "sha256": "65ae22c3bd58079eb62969fbf20fa24ee4d906d63c6a307e747229baea040be8",
+      "contentType": "application/javascript; charset=utf-8",
+      "etag": "W/\"8fb11371ab5cd67b6fd904e60948950c\"",
+      "lastModified": "Mon, 12 Oct 2026 23:37:53 GMT"
+    },
+    "src/amazon-world.js": {
+      "status": 200,
+      "bytes": 6458,
+      "sha256": "73b2f1d3d962385806e50f0dd661a1eca37235ed3ff4c694554f4c0d7f3184a4",
+      "contentType": "application/javascript; charset=utf-8",
+      "etag": "W/\"407f6d086d2067faf4f1a4c9b1356aeb\"",
+      "lastModified": "Mon, 12 Oct 2026 23:37:53 GMT"
+    },
+    "src/racers.js": {
+      "status": 200,
+      "bytes": 6249,
+      "sha256": "7ebbd1455675457a44c5acfd7fa94d0e46f5b65cb72a9ec63306452c03215731",
+      "contentType": "application/javascript; charset=utf-8",
+      "etag": "W/\"90072bed5c93ffe42f188670c8140776\"",
+      "lastModified": "Mon, 12 Oct 2026 23:37:54 GMT"
+    },
+    "src/billboard-layout.js": {
+      "status": 200,
+      "bytes": 814,
+      "sha256": "786d6a1c66ca64826db1ee32bc1ae95cfbc556b6b637a4e4a47c341507aa35e1",
+      "contentType": "application/javascript; charset=utf-8",
+      "etag": "\"d35422f1777f33722534124f58df551a\"",
+      "lastModified": "Mon, 12 Oct 2026 23:37:54 GMT"
+    },
+    "src/roku-lineup.js": {
+      "status": 200,
+      "bytes": 1538,
+      "sha256": "77f853e7efb193ca733b18c9d63c32bbd68faa6959d953bfbcd9febdf7d965b2",
+      "contentType": "application/javascript; charset=utf-8",
+      "etag": "W/\"2cc5a320bc94896f205dab094d099e4a\"",
+      "lastModified": "Mon, 12 Oct 2026 23:37:54 GMT"
+    },
+    "vendor/three.core.min.js": {
+      "status": 200,
+      "bytes": 382617,
+      "sha256": "0a9c2f0672c7b8d993ba7639e71919db181ca50c9dff99c78476d3e19057ca9c",
+      "contentType": "application/javascript; charset=utf-8",
+      "etag": "W/\"adbe2a8093f302c98f02624cb8e10e05\"",
+      "lastModified": "Mon, 12 Oct 2026 23:37:54 GMT"
+    },
+    "src/assets/roku/hotel-transylvania.jpg": {
+      "status": 200,
+      "bytes": 31751,
+      "sha256": "f171873ea45015e6f37643e92ce865243cfbc9162a9e3e92a6e2ddd6b4f85e8e",
+      "contentType": "image/jpeg",
+      "etag": "\"2b385c87a47617af41d509089f136ae2\"",
+      "lastModified": "Mon, 12 Oct 2026 23:37:55 GMT"
+    },
+    "src/assets/roku/madagascar.jpg": {
+      "status": 200,
+      "bytes": 31273,
+      "sha256": "9d396f01b6b60bdc6727c076292ae49e50b558db815a74fb52bee03c2a1f8fa4",
+      "contentType": "image/jpeg",
+      "etag": "\"0db092e3eae9de412cd1cb9b0d4aab1e\"",
+      "lastModified": "Mon, 12 Oct 2026 23:37:55 GMT"
+    },
+    "src/assets/roku/hotel-transylvania-2.jpg": {
+      "status": 200,
+      "bytes": 22853,
+      "sha256": "1e1b446f37c626fceabf7124095e2ce1b7f8774caff0ccaecbbd713e96310e8c",
+      "contentType": "image/jpeg",
+      "etag": "\"ae37ff7ab51428ae479663cd3ccbc667\"",
+      "lastModified": "Mon, 12 Oct 2026 23:37:55 GMT"
+    }
+  },
+  "failed": [],
+  "external": {},
+  "unresolved": {},
+  "refs": {
+    "index.html": [
+      "src/style.css",
+      "src/main.js"
+    ],
+    "src/style.css": [],
+    "src/main.js": [
+      "src/route-links.js",
+      "src/cameras.js",
+      "src/world.js",
+      "src/race-map.js",
+      "src/game.js"
+    ],
+    "src/route-links.js": [
+      "src/game.js"
+    ],
+    "src/cameras.js": [
+      "src/game.js"
+    ],
+    "src/world.js": [
+      "src/impacts.js",
+      "src/billboards.js",
+      "vendor/three.module.min.js",
+      "vendor/BufferGeometryUtils.js",
+      "src/game.js",
+      "src/fork-world.js",
+      "src/sky-world.js",
+      "src/halloween-world.js",
+      "src/bengaluru-world.js",
+      "src/amazon-world.js",
+      "src/cameras.js",
+      "src/racers.js"
+    ],
+    "src/race-map.js": [
+      "src/game.js"
+    ],
+    "src/game.js": [
+      "src/impacts.js"
+    ],
+    "src/impacts.js": [],
+    "src/billboards.js": [
+      "vendor/three.module.min.js",
+      "src/game.js",
+      "src/billboard-layout.js",
+      "src/roku-lineup.js"
+    ],
+    "vendor/three.module.min.js": [
+      "vendor/three.core.min.js"
+    ],
+    "vendor/BufferGeometryUtils.js": [
+      "vendor/three.module.min.js",
+      "vendor/BufferGeometryUtils.js"
+    ],
+    "src/fork-world.js": [
+      "vendor/three.module.min.js",
+      "src/game.js"
+    ],
+    "src/sky-world.js": [
+      "vendor/three.module.min.js",
+      "src/game.js"
+    ],
+    "src/halloween-world.js": [
+      "src/impacts.js",
+      "vendor/three.module.min.js",
+      "src/game.js"
+    ],
+    "src/bengaluru-world.js": [
+      "src/impacts.js",
+      "vendor/three.module.min.js",
+      "src/game.js"
+    ],
+    "src/amazon-world.js": [
+      "src/impacts.js",
+      "vendor/three.module.min.js",
+      "src/game.js"
+    ],
+    "src/racers.js": [
+      "src/impacts.js",
+      "vendor/three.module.min.js",
+      "src/game.js"
+    ],
+    "src/billboard-layout.js": [
+      "src/game.js"
+    ],
+    "src/roku-lineup.js": [
+      "src/assets/roku/hotel-transylvania.jpg",
+      "src/assets/roku/madagascar.jpg",
+      "src/assets/roku/hotel-transylvania-2.jpg"
+    ],
+    "vendor/three.core.min.js": [],
+    "src/assets/roku/hotel-transylvania.jpg": [],
+    "src/assets/roku/madagascar.jpg": [],
+    "src/assets/roku/hotel-transylvania-2.jpg": []
+  }
+}
