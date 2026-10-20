@@ -225,7 +225,7 @@ function scanTemplate(st) {
  */
 function publicExportNamesText(text) {
   const names = new Set();
-  for (const m of text.matchAll(/export\s*\{([^}]*)\}/g)) {
+  for (const m of text.matchAll(/\bexport\s*\{([^}]*)\}/g)) {
     for (const part of m[1].split(",")) {
       const seg = part.trim();
       if (!seg) continue;
@@ -234,10 +234,115 @@ function publicExportNamesText(text) {
       else if (as.length === 1) names.add(seg);
     }
   }
-  for (const m of text.matchAll(/export\s+(?:const|let|var|function|class|async\s+function)\s+([A-Za-z_$][\w$]*)/g))
+  for (const m of text.matchAll(/\bexport\s+(?:const|let|var|function|class|async\s+function)\s+([A-Za-z_$][\w$]*)/g))
     names.add(m[1]);
   if (/\bexport\s+default\b/.test(text)) names.add("default");
   return names;
+}
+
+/**
+ * The names a `const`/`let`/`var` declaration BINDS — the only names the
+ * declaration form exports.
+ *
+ *   export const a = 1, b = 2;      -> a, b
+ *   export const { p, q } = obj;    -> p, q      (destructuring)
+ *   export const { a: b } = obj;    -> b         (the KEY `a` is not bound)
+ *
+ * Two things must NOT be counted:
+ *
+ * 1. The INITIALIZER binds nothing. `export const h = (id) => typeof id`
+ *    exports `h`, not `id`. The scanner therefore tracks whether it is still
+ *    in the BINDING part of the declarator list: the binding ends at the
+ *    first `=` (the initializer begins) and resumes at the next `,` (the
+ *    next declarator begins). Without that, an initializer's own
+ *    identifiers were counted as exported names — and since the capture and
+ *    the layer format the same initializer differently (prettier wraps it),
+ *    that produced a FALSE "public export name was LOST".
+ *
+ * 2. A destructuring KEY is not a binding. `{ a: b }` binds `b`.
+ *
+ * The rule is deliberately conservative: an identifier is counted only when
+ * it is unambiguously a binding. Over-counting would report a false LOST;
+ * under-counting merely misses a check, and the missing check is reported
+ * honestly by the uncovered-table counter.
+ */
+function declaredNames(ts, start) {
+  const out = new Set();
+  const t0 = ts[start];
+  if (!t0) return out;
+
+  // the DESTRUCTURING shape: the declaration starts with a pattern
+  if (t0.t === "pun" && (t0.v === "{" || t0.v === "[")) {
+    const open = t0.v;
+    const close = open === "{" ? "}" : "]";
+    let depth = 0;
+    for (let k = start; k < ts.length; k++) {
+      const tk = ts[k];
+      depth = depthOf(tk, depth);
+      if (depth === 0 && tk.t === "pun" && tk.v === close) break;
+      // one level inside the pattern: a binding unless it is a KEY
+      if (tk.t === "id" && depth === 1) {
+        const nx = ts[k + 1];
+        const isKey = nx && nx.t === "pun" && nx.v === ":";
+        if (!isKey) out.add(tk.v);
+      }
+    }
+    return out;
+  }
+
+  // the SIMPLE shape: names separated by `,` at depth 0
+  let depth = 0;
+  let inBinding = true;
+  for (let k = start; k < ts.length && k < start + 400; k++) {
+    const tk = ts[k];
+    depth = depthOf(tk, depth);
+    if (depth === 0) {
+      if (tk.t === "pun" && tk.v === "=") inBinding = false;
+      else if (tk.t === "pun" && tk.v === ",") inBinding = true;
+      else if (tk.t === "id" && inBinding && tk.v !== "of" && tk.v !== "in") out.add(tk.v);
+    }
+    if (tk.t === "pun" && tk.v === ";" && depth === 0) break;
+    if (tk.t === "pun" && tk.v === "}" && depth === 0 && ts[k - 1]?.t === "pun" && ts[k - 1].v === "{") break;
+  }
+  return out;
+}
+
+/**
+ * The bracket depth of a token, for the scanner that has to know where a
+ * construct ENDS.
+ *
+ * The tokenizer emits a template literal's interpolation as a `${` token
+ * followed by the inner tokens and a `}` token — the two are separate. So a
+ * scanner that counts only `{` and `}` sees the interpolation's `}` with no
+ * matching `{`, and its depth goes NEGATIVE. From there every later
+ * `;` looks like it is at the wrong depth, the declaration scan never stops,
+ * and a comma inside a template puts the scanner back into "binding" mode —
+ * which counted the template's own identifiers as exported names.
+ *
+ * So `${` opens a bracket and `}` closes it: the pair balances.
+ */
+function depthOf(tk, depth) {
+  if (tk.t !== "pun") return depth;
+  if (tk.v === "{" || tk.v === "(" || tk.v === "[" || tk.v === "${") return depth + 1;
+  if (tk.v === "}" || tk.v === ")" || tk.v === "]") return depth - 1;
+  return depth;
+}
+
+/**
+ * The index of the `}` that closes the `{` at `start`, or -1.
+ */
+function closingBrace(ts, start) {
+  let depth = 0;
+  for (let k = start; k < ts.length; k++) {
+    const tk = ts[k];
+    if (tk.t === "pun" && (tk.v === "{" || tk.v === "(" || tk.v === "[" || tk.v === "${")) depth++;
+    else if (tk.t === "pun" && (tk.v === "}" || tk.v === ")" || tk.v === "]")) {
+      depth--;
+      if (depth === 0 && tk.v === "}") return k;
+      if (depth < 0) return -1;
+    }
+  }
+  return -1;
 }
 
 function publicExportNames(text) {
@@ -249,8 +354,8 @@ function publicExportNames(text) {
     const n1 = ts[i + 1];
     if (!n1) continue;
     if (n1.t === "pun" && n1.v === "{") {
-      let end = i + 2;
-      while (end < ts.length && !(ts[end].t === "pun" && ts[end].v === "}")) end++;
+      const end = closingBrace(ts, i + 1);
+      if (end < 0) continue;
       let group = [];
       const flush = () => {
         if (!group.length) return;
@@ -267,6 +372,9 @@ function publicExportNames(text) {
       flush();
       i = end;
     } else if (n1.t === "id" && n1.v === "default") {
+      // `export default function X` / `export default X` — the public name
+      // is `default`, and `publicExportNames` counts it, so it must be a
+      // SURFACE too (see `exportTables`) or the chunk reports a vacuous green
       names.add("default");
     } else if (n1.t === "id" && n1.v === "async" && ts[i + 2]?.t === "id" && ts[i + 2].v === "function") {
       const name = ts[i + 3];
@@ -278,33 +386,20 @@ function publicExportNames(text) {
       const name = ts[i + 2];
       if (name && name.t === "id") names.add(name.v);
     } else if (n1.t === "id" && (n1.v === "const" || n1.v === "let" || n1.v === "var")) {
-      // Only the declarator NAMES of the declaration count. The
-      // initializer's own object-literal properties are NOT exports:
-      // `export const _debug = () => ({ ctx, master, ... })` exports
-      // `_debug`, not `ctx` or `master`. So the scan tracks brace depth
-      // and stops at the end of the DECLARATION.
-      let depth = 0;
-      for (let k = i + 2; k < ts.length && k < i + 400; k++) {
-        const tk = ts[k];
-        if (tk.t === "pun" && (tk.v === "{" || tk.v === "(" || tk.v === "[")) depth++;
-        else if (tk.t === "pun" && (tk.v === "}" || tk.v === ")" || tk.v === "]")) depth--;
-        if (tk.t === "id" && depth === 0) {
-          const nx = ts[k + 1];
-          const isDeclarator =
-            nx &&
-            ((nx.t === "pun" && (nx.v === "=" || nx.v === "," || nx.v === ";" || nx.v === ")" || nx.v === "}")) ||
-              nx.t === "id");
-          if (isDeclarator && tk.v !== "of" && tk.v !== "in") names.add(tk.v);
-        }
-        if (tk.t === "pun" && tk.v === ";" && depth === 0) break;
-        if (tk.t === "pun" && tk.v === "}" && depth === 0 && ts[k - 1]?.t === "pun" && ts[k - 1].v === "{") break;
-      }
+      for (const nm of declaredNames(ts, i + 2)) names.add(nm);
     }
   }
   return names;
 }
 
-/** Every export TABLE in a source, with its line range. */
+/**
+ * Every export SURFACE in a source, with its line range: the brace form
+ * (`export { a, b as c }`) AND the declaration form (`export const X`,
+ * `export function X`, `export class X`). The declaration form matters:
+ * renaming one of those moves the chunk's public name exactly as a
+ * shorthand export does, and a chunk that uses ONLY that form used to be
+ * reported as "0 export table(s) checked" — a vacuous green.
+ */
 function exportTables(text) {
   const lineStarts = [0];
   for (let i = 0; i < text.length; i++) if (text[i] === "\n") lineStarts.push(i + 1);
@@ -325,11 +420,34 @@ function exportTables(text) {
     if (t.t !== "id" || t.v !== "export") continue;
     const n1 = ts[i + 1];
     if (!n1 || n1.t !== "pun" || n1.v !== "{") continue;
-    let end = i + 2;
-    while (end < ts.length && !(ts[end].t === "pun" && ts[end].v === "}")) end++;
-    if (end >= ts.length) continue;
+    const end = closingBrace(ts, i + 1);
+    if (end < 0) continue;
     out.push({ from: lineOf(t.s), to: lineOf(ts[end].e) });
     i = end;
+  }
+  // the `export default` form: `export default function X` / `export default X`.
+  // The public name is `default`; `publicExportNames` counts it, so it must be
+  // a SURFACE here too — otherwise a chunk whose only export is a default
+  // export reports "0 export table(s) checked" and a vacuous green.
+  for (let i = 0; i < ts.length - 2; i++) {
+    if (ts[i].t !== "id" || ts[i].v !== "export") continue;
+    const k1 = ts[i + 1];
+    if (!k1 || k1.t !== "id" || k1.v !== "default") continue;
+    out.push({ from: lineOf(ts[i].s), to: lineOf(ts[i + 1].e) });
+  }
+  // the DECLARATION form: `export const X`, `export function X`,
+  // `export class X`, `export async function X`
+  for (let i = 0; i < ts.length - 2; i++) {
+    if (ts[i].t !== "id" || ts[i].v !== "export") continue;
+    const k1 = ts[i + 1];
+    if (!k1 || k1.t !== "id") continue;
+    if (k1.v === "async") {
+      const k2 = ts[i + 2];
+      if (!k2 || k2.t !== "id" || k2.v !== "function") continue;
+    } else if (k1.v !== "const" && k1.v !== "let" && k1.v !== "var" && k1.v !== "function" && k1.v !== "class") {
+      continue;
+    }
+    out.push({ from: lineOf(ts[i].s), to: lineOf(ts[i + 1].e) });
   }
   return out;
 }
@@ -352,7 +470,26 @@ const spec = JSON.parse(fs.readFileSync(specPath, "utf8"));
 // The src files, by their path relative to src/ and by basename — a spec's
 // `file` field sometimes omits the path prefix the file actually carries
 // (`12-part.js` on disk as `src/\12-part.js`), so a lookup needs both.
-const srcDir = path.join(PROJ, "src");
+// WHERE the derived layer and the capture live, per the mirror's own spec.
+// A mirror may record `derivedRoot` (the derived layer is not always at the
+// mirror root's `src/`) and `captureRoot` (the pristine is not always at the
+// mirror root). Absent either, the historical location is used.
+// a root is used only when it is a STRING: some mirrors store `captures`
+// as an ARRAY of records, not a directory path
+const str = (v) => (typeof v === "string" ? v : "");
+const DERIVED_ROOT = str(spec.derivedRoot) || str(spec.derived) || "src";
+const CAPTURE_ROOT = str(spec.captureRoot) || str(spec.captures);
+
+// a spec's `captures` ARRAY is a map from a capture to the pretty twin that
+// mirrors it — the pristine the gate needs
+const capturePretty = new Map();
+if (Array.isArray(spec.captures)) {
+  for (const c of spec.captures) {
+    if (c && typeof c.capture === "string" && typeof c.pretty === "string")
+      capturePretty.set(c.capture, c.pretty);
+  }
+}
+const srcDir = path.isAbsolute(DERIVED_ROOT) ? DERIVED_ROOT : path.join(PROJ, DERIVED_ROOT);
 const srcByRel = new Map();
 const srcByBase = new Map();
 if (fs.existsSync(srcDir)) {
@@ -415,6 +552,40 @@ if (fs.existsSync(srcDir)) {
   }
 }
 
+// the WHOLE-FILE sections: no line range, but the file is the derived text
+const wholeFiles = new Map();
+for (const sec of spec.sections || []) {
+  if (!sec.wholeFile || !sec.sourceFile || !sec.file) continue;
+  if (!wholeFiles.has(sec.sourceFile)) wholeFiles.set(sec.sourceFile, []);
+  wholeFiles.get(sec.sourceFile).push(sec);
+}
+
+// find a file by its basename anywhere under the mirror — the spec may
+// store a bare basename where the file lives under captureRoot
+function findByBase(base) {
+  if (!base) return null;
+  const stack = [PROJ];
+  while (stack.length) {
+    const dir = stack.pop();
+    let entries;
+    try {
+      entries = fs.readdirSync(dir, { withFileTypes: true });
+    } catch {
+      continue;
+    }
+    for (const e of entries) {
+      const p = path.join(dir, e.name);
+      if (e.isDirectory()) {
+        if (e.name === ".git" || e.name === "node_modules") continue;
+        stack.push(p);
+      } else if (e.name === base) {
+        return fs.readFileSync(p, "utf8");
+      }
+    }
+  }
+  return null;
+}
+
 // the index-only skipped tails
 const tailsBySource = new Map();
 for (const sec of spec.sections || []) {
@@ -440,23 +611,54 @@ let applyBindingMap = null;
 // The source list: `spec.sources[]` when the mirror has one, else DERIVED
 // from the sections' `sourceFile` — the older generation records only
 // `spec.sections[]`, and walking `sources` alone left those layers unchecked.
-let sources = spec.sources || [];
-if (!sources.length) {
-  const seen = new Map();
+// The source list: `spec.sources[]` when the mirror has one, else DERIVED
+// from the sections' `sourceFile` — the older generation records only
+// `spec.sections[]`, and walking `sources` alone left those layers unchecked.
+//
+// Two shapes need care. A spec's `sources[]` may name its pristine under
+// `path` rather than `sourceFile` (the pristine is a FILE there — a `path`
+// ending in `/` is the derived layer's root, not a pristine), and a source
+// may be named ONLY by its sections. So: accept `sourceFile`, fall back to a
+// file-shaped `path`, and union in every section's `sourceFile`.
+const isFilePath = (v) => typeof v === "string" && v.length > 0 && !v.endsWith("/") && /[.\\]/.test(v.slice(-12));
+let sources = (spec.sources || []).map((s) => ({
+  ...s,
+  sourceFile: s.sourceFile || (isFilePath(s.path) ? s.path : null),
+}));
+{
+  const known = new Set(sources.map((s) => s.sourceFile).filter(Boolean));
   for (const sec of spec.sections || []) {
-    if (!sec.sourceFile) continue;
-    if (!seen.has(sec.sourceFile)) seen.set(sec.sourceFile, { sourceFile: sec.sourceFile, capture: null });
-    const e = seen.get(sec.sourceFile);
-    if (!e.capture && sec.capture) e.capture = sec.capture;
+    if (!sec.sourceFile || known.has(sec.sourceFile)) continue;
+    known.add(sec.sourceFile);
+    sources.push({ sourceFile: sec.sourceFile, capture: sec.capture || null });
   }
-  sources = [...seen.values()];
 }
 
 let checked = 0;
 let lost = 0;
+let skipped = 0;
+const skippedBy = new Map();
 for (const src of sources) {
   if (!src.sourceFile) continue;
-  const pristineText = read(path.join(PROJ, src.sourceFile)) ?? (src.capture ? read(path.join(PROJ, src.capture)) : null);
+  // A source that is not JAVASCRIPT has no export table. A CSS file's
+  // `.export { … }` rule is not an export table, and reading one as a table
+  // reported a public name lost. A stylesheet is part of the layer, but it
+  // carries no ES module surface.
+  if (!/\.(?:js|mjs|cjs|jsx)$/i.test(src.sourceFile)) continue;
+  // the pristine: the spec's recorded path, else the capture under
+  // `captureRoot`, else a file of that name anywhere in the mirror's tree
+  const pristineCandidates = [];
+  if (src.sourceFile) pristineCandidates.push(path.join(PROJ, src.sourceFile));
+  if (src.capture && capturePretty.has(src.capture))
+    pristineCandidates.push(path.join(PROJ, capturePretty.get(src.capture)));
+  if (src.capture) {
+    pristineCandidates.push(path.join(PROJ, src.capture));
+    if (CAPTURE_ROOT) pristineCandidates.push(path.join(PROJ, CAPTURE_ROOT, src.capture));
+  }
+  if (src.sourceFile && CAPTURE_ROOT) pristineCandidates.push(path.join(PROJ, CAPTURE_ROOT, src.sourceFile));
+  const pristineText =
+    pristineCandidates.map(read).find((t) => t != null) ??
+    (src.sourceFile ? findByBase(src.sourceFile.split("/").pop()) : null);
   if (pristineText == null) continue;
   const slices = slicesBySource.get(src.sourceFile) || [];
   const tails = tailsBySource.get(src.sourceFile) || [];
@@ -480,6 +682,18 @@ for (const src of sources) {
         break;
       }
     }
+    // a WHOLE-FILE section has no line range, so no slice can cover a table —
+    // but the whole file IS the derived text, and its public names can be
+    // compared with the pristine's
+    if (derivedText == null) {
+      for (const w of wholeFiles.get(src.sourceFile) || []) {
+        const onDisk = resolveSrcAll(w.file)[0];
+        if (onDisk) {
+          derivedText = read(onDisk);
+          break;
+        }
+      }
+    }
     if (derivedText == null) {
       for (const t of tails) {
         if (t.startLine <= table.from && t.endLine >= table.to) {
@@ -489,7 +703,15 @@ for (const src of sources) {
         }
       }
     }
-    if (derivedText == null) continue; // the table is not part of the derived layer
+    if (derivedText == null) {
+      // the table has no counterpart in the derived layer — a whole-file
+      // vendor chunk the layer does not carry, or a table outside every
+      // slice. It is NOT a pass and NOT a failure: it is uncovered. Count
+      // it, so the denominator of the report is honest.
+      skipped++;
+      skippedBy.set(src.sourceFile, (skippedBy.get(src.sourceFile) || 0) + 1);
+      continue;
+    }
     checked++;
     const afterTok = publicExportNames(derivedText);
     const after = afterTok.size ? afterTok : publicExportNamesText(derivedText);
@@ -504,6 +726,13 @@ for (const src of sources) {
 }
 
 if (!QUIET) console.log(`check-exports: ${checked} export table(s) checked`);
+if (skipped && !QUIET) {
+  // An uncovered table is neither a pass nor a failure. It must be VISIBLE:
+  // a mirror whose tables are all uncovered would otherwise print "0 export
+  // table(s) checked" and "no public export name lost" — a vacuous green.
+  console.log(`check-exports: ${skipped} export table(s) NOT covered (no derived text) — these are unchecked, not proven intact`);
+  for (const [f, n] of [...skippedBy.entries()].sort()) console.log(`  ${f}: ${n}`);
+}
 if (lost) {
   console.log(`check-exports: FAILED — ${lost} public export name(s) lost`);
   process.exit(1);
