@@ -215,6 +215,31 @@ function scanTemplate(st) {
  * keyword. The engine's own foreignNameIndices is position-based; this must
  * agree with it.
  */
+/**
+ * A TEXTUAL fallback for the tokenizer, which is a heuristic: a backtick
+ * or a `/` it cannot classify can make it swallow the rest of a file. When
+ * the tokenizer finds no export names in a text, this scans it textually.
+ * It is cruder than the tokenizer (it can see an `export` inside a string),
+ * so it is a fallback only — but it makes the verdict robust against the
+ * tokenizer's blindness without weakening the check.
+ */
+function publicExportNamesText(text) {
+  const names = new Set();
+  for (const m of text.matchAll(/export\s*\{([^}]*)\}/g)) {
+    for (const part of m[1].split(",")) {
+      const seg = part.trim();
+      if (!seg) continue;
+      const as = seg.split(/\s+as\s+/);
+      if (as.length === 2) names.add(as[1].trim());
+      else if (as.length === 1) names.add(seg);
+    }
+  }
+  for (const m of text.matchAll(/export\s+(?:const|let|var|function|class|async\s+function)\s+([A-Za-z_$][\w$]*)/g))
+    names.add(m[1]);
+  if (/\bexport\s+default\b/.test(text)) names.add("default");
+  return names;
+}
+
 function publicExportNames(text) {
   const ts = tokens(text);
   const names = new Set();
@@ -443,7 +468,8 @@ for (const src of sources) {
       .split(/\r?\n/)
       .slice(table.from - 1, table.to)
       .join("\n");
-    const names = publicExportNames(tableText);
+    const tokNames = publicExportNames(tableText);
+    const names = tokNames.size ? tokNames : publicExportNamesText(tableText);
     if (!names.size) continue;
 
     // the layer's text for this table: a slice that carries it, or the tail
@@ -465,7 +491,8 @@ for (const src of sources) {
     }
     if (derivedText == null) continue; // the table is not part of the derived layer
     checked++;
-    const after = publicExportNames(derivedText);
+    const afterTok = publicExportNames(derivedText);
+    const after = afterTok.size ? afterTok : publicExportNamesText(derivedText);
     const missing = [...names].filter((n) => !after.has(n));
     if (missing.length) {
       lost += missing.length;
