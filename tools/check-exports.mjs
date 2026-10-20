@@ -541,7 +541,13 @@ for (const sec of spec.sections || []) {
   const onDisk = resolveSrcAll(sec.file);
   if (!onDisk.length) continue;
   if (!Number.isInteger(sec.startLine) || !Number.isInteger(sec.endLine)) continue;
-  addSlice(sec.sourceFile, { file: onDisk.join("\n"), from: sec.startLine, to: sec.endLine });
+  // A section's file can match SEVERAL src files — the spec names a
+  // basename, and two directories may hold a file of that name
+  // (`play/src/stream/pets-01.js` and `play/src/ui/pets-01.js`).
+  // Joining the candidates into ONE path made a path that no read can
+  // open, so the table silently fell through to the uncovered counter.
+  // Each candidate is its own slice entry instead.
+  for (const p of onDisk) addSlice(sec.sourceFile, { file: p, from: sec.startLine, to: sec.endLine });
 }
 if (fs.existsSync(srcDir)) {
   for (const f of srcByRel.values()) {
@@ -632,6 +638,85 @@ let sources = (spec.sources || []).map((s) => ({
     known.add(sec.sourceFile);
     sources.push({ sourceFile: sec.sourceFile, capture: sec.capture || null });
   }
+  // A whole-FILE section may name NO sourceFile but still name the CAPTURE
+  // it came from — and the capture is what a SOURCE already lists. So the
+  // section's `capture` links it to that source: the source's pristine is
+  // the capture, and the section's own `file` is the derived text.
+  //
+  // Without this link the source is walked but its derived counterpart is
+  // never found, and every table in it is reported as uncovered. 73 of
+  // spiderman-spiderverse's sections are shaped this way, holding 216
+  // export tables.
+  for (const src of sources) {
+    if (!src.capture) continue;
+    const sec = (spec.sections || []).find(
+      (s) => s.capture === src.capture && s.wholeFile && s.file && !s.sourceFile
+    );
+    if (!sec) continue;
+    src.wholeFileSection = sec;
+  }
+  // A whole-FILE section that names NO sourceFile still records WHICH
+  // capture it came from, in a sibling field: `title` is the fleet's usual
+  // one ("assets/AboutPage-CAsd8rwd.js"), and `note` names the same path in
+  // prose. The section's own `file` is the DERIVED text. Resolving the
+  // capture this way makes the table VISIBLE: without it, a whole-file
+  // vendor chunk's export table produced no line at all — neither checked
+  // nor reported as uncovered — and 994 tables across 37 mirrors were
+  // invisible to this gate.
+  //
+  // The capture must EXIST on disk: a `title` naming a file that is not
+  // there stays prose, and is not treated as a mapping.
+  //
+  // The candidates, in the order they are tried:
+  //   - the section's own `wholeFile` field, when it is a path: the section's
+  //     `file` is the DERIVED text (under the derived root) and `wholeFile`
+  //     is the pristine it was cut from (at the mirror root). 244 sections
+  //     across 31 mirrors are shaped this way, and their export tables were
+  //     invisible to this gate.
+  //   - a `capture`/`source`/`origin`/`from` field.
+  //   - a .js path named in `title`/`note`/`desc`/`description`.
+  //
+  // EVERY candidate must resolve to a file DIFFERENT from the section's
+  // derived text. A mirror whose spec says "src = capture" (the derived
+  // layer IS the capture) would otherwise be compared with ITSELF: a
+  // comparison that can only ever pass, and that proves nothing about the
+  // layer. 63 mirrors are shaped that way, and every one of their tables
+  // was a self-compare.
+  const derivedCandidates = (sec) => [
+    path.join(srcDir, sec.file),
+    path.join(PROJ, sec.file),
+    path.join(srcDir, path.basename(sec.file || "")),
+  ];
+  const captureOf = (sec) => {
+    const derived = derivedCandidates(sec).map((d) => path.resolve(d));
+    const usable = (v) => {
+      if (typeof v !== "string" || !/\.(?:js|mjs|cjs|jsx)$/i.test(v)) return false;
+      const p = path.resolve(path.join(PROJ, v));
+      if (!fs.existsSync(p)) return false;
+      // the pristine must be a DIFFERENT file from the derived text
+      return !derived.includes(p);
+    };
+    if (typeof sec.wholeFile === "string" && usable(sec.wholeFile)) return sec.wholeFile;
+    for (const f of ["capture", "source", "origin", "from"]) {
+      if (usable(sec[f])) return sec[f];
+    }
+    for (const f of ["title", "note", "desc", "description"]) {
+      const v = sec[f];
+      if (typeof v !== "string") continue;
+      const m = v.match(/([\w./@-]+\.(?:js|mjs|cjs|jsx))/);
+      if (m && usable(m[1])) return m[1];
+    }
+    return null;
+  };
+  for (const sec of spec.sections || []) {
+    if (!sec.wholeFile || sec.sourceFile || !sec.file) continue;
+    const cap = captureOf(sec);
+    if (!cap) continue;
+    const key = `wholefile:${cap}`;
+    if (known.has(key)) continue;
+    known.add(key);
+    sources.push({ sourceFile: key, capture: cap, wholeFileSection: sec });
+  }
 }
 
 let checked = 0;
@@ -645,20 +730,29 @@ for (const src of sources) {
   // reported a public name lost. A stylesheet is part of the layer, but it
   // carries no ES module surface.
   if (!/\.(?:js|mjs|cjs|jsx)$/i.test(src.sourceFile)) continue;
+  // a whole-file section resolved through its CAPTURE: the source key is
+  // `wholefile:<capture>`, the PRISTINE is the capture, and the DERIVED text
+  // is the section's own `file` (the whole chunk, carried verbatim)
+  const isWholeFileSrc = src.sourceFile.startsWith("wholefile:");
   // the pristine: the spec's recorded path, else the capture under
   // `captureRoot`, else a file of that name anywhere in the mirror's tree
   const pristineCandidates = [];
-  if (src.sourceFile) pristineCandidates.push(path.join(PROJ, src.sourceFile));
-  if (src.capture && capturePretty.has(src.capture))
-    pristineCandidates.push(path.join(PROJ, capturePretty.get(src.capture)));
-  if (src.capture) {
+  if (isWholeFileSrc) {
     pristineCandidates.push(path.join(PROJ, src.capture));
     if (CAPTURE_ROOT) pristineCandidates.push(path.join(PROJ, CAPTURE_ROOT, src.capture));
+  } else {
+    if (src.sourceFile) pristineCandidates.push(path.join(PROJ, src.sourceFile));
+    if (src.capture && capturePretty.has(src.capture))
+      pristineCandidates.push(path.join(PROJ, capturePretty.get(src.capture)));
+    if (src.capture) {
+      pristineCandidates.push(path.join(PROJ, src.capture));
+      if (CAPTURE_ROOT) pristineCandidates.push(path.join(PROJ, CAPTURE_ROOT, src.capture));
+    }
+    if (src.sourceFile && CAPTURE_ROOT) pristineCandidates.push(path.join(PROJ, CAPTURE_ROOT, src.sourceFile));
   }
-  if (src.sourceFile && CAPTURE_ROOT) pristineCandidates.push(path.join(PROJ, CAPTURE_ROOT, src.sourceFile));
   const pristineText =
     pristineCandidates.map(read).find((t) => t != null) ??
-    (src.sourceFile ? findByBase(src.sourceFile.split("/").pop()) : null);
+    (isWholeFileSrc ? null : src.sourceFile ? findByBase(src.sourceFile.split("/").pop()) : null);
   if (pristineText == null) continue;
   const slices = slicesBySource.get(src.sourceFile) || [];
   const tails = tailsBySource.get(src.sourceFile) || [];
@@ -690,6 +784,22 @@ for (const src of sources) {
         const onDisk = resolveSrcAll(w.file)[0];
         if (onDisk) {
           derivedText = read(onDisk);
+          break;
+        }
+      }
+    }
+    // a whole-file section resolved through its CAPTURE: the section's own
+    // `file` is the derived text, and it may sit under the derived root
+    // (`readable/`) rather than under `src/`
+    if (derivedText == null && (isWholeFileSrc || src.wholeFileSection)) {
+      const w = src.wholeFileSection;
+      for (const c of [
+        path.join(srcDir, w.file),
+        path.join(PROJ, w.file),
+        path.join(srcDir, path.basename(w.file)),
+      ]) {
+        if (fs.existsSync(c)) {
+          derivedText = read(c);
           break;
         }
       }
