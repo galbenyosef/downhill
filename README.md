@@ -146,6 +146,7 @@ The game boots at `http://localhost:3000/`. Course deep links work as upstream
 ```
 node tools/verify.mjs     # re-hash the capture against the manifest
 node tools/audit.js       # derived-layer integrity gate
+node tools/check-exports.mjs   # the derived layer still exports every public name
 ```
 
 Last run: `24 files checked, 0 problems` and `AUDIT PASS  — 29 spec sections
