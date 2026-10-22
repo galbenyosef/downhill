@@ -602,8 +602,8 @@ if (manifest) {
 // ── best-effort: re-render every pretty with the pinned prettier 3.9.6 ─
 const prettierCandidates = [
   process.env.PRETTIER_MJS,
+  path.join(proj, "tools", "vendor", "prettier", "index.mjs"),
   path.join(proj, "node_modules", "prettier", "index.mjs"),
-  "D:/repos/mirrors/metropolygonia/node_modules/prettier/index.mjs",
 ].filter(Boolean);
 function loadPinnedPrettier() {
   for (const c of prettierCandidates) {
@@ -620,7 +620,10 @@ function loadPinnedPrettier() {
 }
 
 (async () => {
-  let renderNote = `prettier ${PINNED} not importable — renderOptions recorded, re-render check skipped`;
+  let renderNote =
+    `prettier ${PINNED} not importable — renderOptions recorded, re-render check skipped; ` +
+    `expected this mirror's own tools/vendor/prettier/index.mjs (prettier ${PINNED}), ` +
+    `or a local npm install of prettier@${PINNED} in node_modules/prettier`;
   const prettierPath = loadPinnedPrettier();
   if (prettierPath) {
     const prettier = (await import(pathToFileURL(prettierPath).href)).default;

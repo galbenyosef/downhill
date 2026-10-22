@@ -138,8 +138,8 @@ const prettyRelFor = (capRel) =>
 async function loadPrettier() {
   const candidates = [
     process.env.PRETTIER_MJS,
+    path.join(proj, "tools", "vendor", "prettier", "index.mjs"),
     path.join(proj, "node_modules", "prettier", "index.mjs"),
-    "D:/repos/mirrors/metropolygonia/node_modules/prettier/index.mjs",
   ].filter(Boolean);
   for (const c of candidates) {
     if (!fs.existsSync(c)) continue;
@@ -152,7 +152,14 @@ async function loadPrettier() {
       /* try next */
     }
   }
-  throw new Error(`pinned prettier ${PINNED} not found (set PRETTIER_MJS to its index.mjs)`);
+  throw new Error(
+    `pinned prettier ${PINNED} not found.\n` +
+      `Looked for, in order: $PRETTIER_MJS, tools/vendor/prettier/index.mjs (this mirror's own ` +
+      `vendored copy), node_modules/prettier/index.mjs (a local npm install of prettier@${PINNED}).\n` +
+      `Restore the vendored copy with: git checkout -- tools/vendor/prettier\n` +
+      `or install it locally with: npm install --no-save prettier@${PINNED}\n` +
+      `(or set $PRETTIER_MJS to a prettier ${PINNED} index.mjs).`,
+  );
 }
 
 // single pass + idempotency proof: prettier output must be a fixed point of

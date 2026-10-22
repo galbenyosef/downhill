@@ -111,6 +111,12 @@ runtime.
 - `tools/verify.mjs` — re-hash the capture against the manifest
 - `tools/update.mjs` — read-only drift probe against the live origin
 - `tools/audit.js` — integrity gate for the derived layers (`AUDIT PASS`)
+- `tools/vendor/prettier/` — the pinned renderer (prettier **3.9.6**, module
+  API) this mirror's `readable/` + `src/` were produced with, vendored INTO the
+  mirror and committed, so `tools/derive.mjs` / `tools/audit.js` never reach
+  into a sibling mirror's tree. Provenance and the exact npm integrity hash:
+  `tools/vendor/prettier/VENDOR-README.md`. No install step is needed — the
+  renderer is already in the tree.
 - `docs/cover.png`, `docs/boot-2026-10-13.png` — cover + boot evidence (both
   captured in actual gameplay on the served mirror: FPV at 81 km/h through
   Valparaíso checkpoint 2/3, and the sunlit descent leading the pack)
