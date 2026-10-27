@@ -200,6 +200,26 @@ same record is in `split-spec.json` under `coverageNote`.
   (including the 2 import-map entries) and keeps the vendor sections' content
   guards.
 
+## Boot test (2026-10-27)
+
+- Entry: `http://127.0.0.1:4774/` served by `tools/serve.mjs` (root = repo root,
+  matching the origin's absolute `/src/` and `/vendor/` paths) with the network
+  blocked (`MAP * 127.0.0.1`).
+- Outcome: **rendered** — the full location menu appeared, and clicking "LET'S
+  RIDE" launched Hallow's Descent into live gameplay (bike handlebars, HUD,
+  race map, 53 km/h, position 5/5, run clock advancing).
+- Evidence: body 424 chars (gameplay HUD) / 1214 chars (menu); canvas
+  1262x568; 0 console errors; 0 failed same-origin requests, 1 blocked
+  cross-origin request (the `fonts.googleapis.com` Barlow stylesheet, expected
+  under the offline rule); screenshot `docs/boot-2026-10-27.png`.
+- Gaps seen: none.
+
+This re-confirms, offline and from a freshly added server, the 2026-10-13
+served-mirror boot record below — the capture is fully self-contained for boot
+and gameplay, and no "playable build absent/gated" claim exists to confirm or
+refute. The one cross-origin dependency remains the CDN webfont stylesheet,
+which has system fallbacks and does not affect rendering.
+
 ## Updating from upstream
 
 ```
