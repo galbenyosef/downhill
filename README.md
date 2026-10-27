@@ -164,6 +164,42 @@ from their capture source, 5 index-only wholeFile sections carry no src file,
 inside the capture, 21/21 pretties re-render byte-exact under pinned prettier
 3.9.6)`.
 
+### Export-name coverage (measured 2026-10-27)
+
+`node tools/check-exports.mjs` reports **63 export tables checked, 4 NOT
+covered, 0 public names lost** (`checked=63 uncovered=4 lost=0`; the fleet's
+coverage instrument independently measures `captureTables=67 blind=0`). The
+same record is in `split-spec.json` under `coverageNote`.
+
+- **63 checked** — every app module's export table is compared against a
+  *different* file: the pristine is its prettier reading copy under
+  `readable/`, the derived text is its statement-aligned
+  `src/src__<module>-NN.js` slice. Renaming a public name on either side turns
+  the gate red and names the file and the binding (proven in a throwaway copy:
+  `ROKU_CHECKED_ON` → `ROKU_CHECKED_ON_X` produced
+  `readable/src__roku-lineup.pretty.js: a public export name was LOST:
+  ROKU_CHECKED_ON`, exit 1).
+- **4 NOT covered** — the vendor export tables: `vendor/three.module.min.js`
+  (2 tables, 243 + 197 public names), `vendor/three.core.min.js` (1 table, 442
+  names) and `vendor/BufferGeometryUtils.js` (1 table, 13 names). The vendor
+  rule ships these files byte-exact and renders each whole to
+  `readable/vendor__<name>.pretty.js`, never sliced — the reading copy **is**
+  the layer's terminal text, so there is no derived file downstream to compare
+  and comparing it with itself is the self-compare the gate refuses. Naming the
+  served capture a second time counts the same table twice (measured 4 → 8
+  NOT covered) and is not done: **one table, one name**.
+- **Importer evidence** that all four are load-bearing: the entry document's
+  import map maps `three` → `/vendor/three.module.min.js` and
+  `three/addons/utils/BufferGeometryUtils.js` → `/vendor/BufferGeometryUtils.js`;
+  eight app modules `import * as THREE from 'three'`; `src/world.js` imports
+  `mergeGeometries` from the addon; `vendor/three.module.min.js` imports
+  `./three.core.min.js`.
+- **Their bytes are still watched**: `tools/verify.mjs` re-hashes all 24
+  captured files against `.upstream/manifest.json` (a renamed vendor name turns
+  the integrity gate red), and `tools/audit.js` resolves all 42 imports
+  (including the 2 import-map entries) and keeps the vendor sections' content
+  guards.
+
 ## Updating from upstream
 
 ```
